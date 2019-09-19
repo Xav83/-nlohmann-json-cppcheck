@@ -2,6 +2,23 @@ cmake_minimum_required(VERSION 3.15.2)
 
 project(cppcheckOnModernJson)
 
+find_program(CPPCHECK NAMES cppcheck cppcheck.exe HINTS "C:\\Program Files\\Cppcheck")
+
+if(${CPPCHECK} MATCHES CPPCHECK-NOTFOUND)
+    message(FATAL_ERROR "Cppcheck not found")
+endif(${CPPCHECK} MATCHES CPPCHECK-NOTFOUND)
+
+add_custom_target(
+        cppcheck ALL
+        COMMAND ${CPPCHECK}
+        --error-exitcode=1
+        --enable=warning,style,performance,portability
+        --std=c++11
+        --project=${PROJECT_NAME}.sln
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Running cppcheck"
+)
+
 find_program(CONAN NAMES conan.exe HINTS "C:\\Program Files\\Conan\\conan")
 
 if(${CONAN}-NOTFOUND)
