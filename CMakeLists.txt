@@ -45,6 +45,8 @@ set_source_files_properties(Conan_Jsonformoderncpp PROPERTIES CXX_STANDARD 17)
 target_link_libraries(Conan_Jsonformoderncpp
                       PRIVATE CONAN_PKG::jsonformoderncpp)
 
+## ================================================================================
+
 include(ExternalProject)
 ExternalProject_Add(
   OfficialLastReleaseRepository
@@ -64,4 +66,26 @@ add_dependencies(OfficialLastRelease_Jsonformoderncpp
 
 ExternalProject_Get_Property(OfficialLastReleaseRepository SOURCE_DIR)
 target_include_directories(OfficialLastRelease_Jsonformoderncpp
+                           PRIVATE ${SOURCE_DIR}/include)
+
+## ================================================================================
+
+include(ExternalProject)
+ExternalProject_Add(
+  PersonalForkRepository
+  GIT_REPOSITORY https://github.com/Xav83/json.git
+  GIT_TAG origin/removeMoreCppcheckWarnings
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ""
+  TEST_COMMAND "")
+
+add_executable(PersonalFork_Jsonformoderncpp
+               ${CMAKE_CURRENT_LIST_DIR}/src/main)
+set_source_files_properties(PersonalFork_Jsonformoderncpp PROPERTIES
+                            CXX_STANDARD 17)
+
+add_dependencies(PersonalFork_Jsonformoderncpp PersonalForkRepository)
+
+ExternalProject_Get_Property(PersonalForkRepository SOURCE_DIR)
+target_include_directories(PersonalFork_Jsonformoderncpp
                            PRIVATE ${SOURCE_DIR}/include)
