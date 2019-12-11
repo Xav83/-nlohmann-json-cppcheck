@@ -15,7 +15,15 @@ jobs:
         choco install conan --version 1.11.1
     - name: Creating Build folder
       run: mkdir build
-    - name: Build Cppcheck for "JSON for Modern c++"
+    - name: Generate the solutions
       run: |
         cd build
-        cmake .. -G "Visual Studio 15 2017" && cmake --build .
+        cmake .. -G "Visual Studio 15 2017"
+    - name: Build the solutions
+      run: |
+        cd build
+        cmake --build .
+    - name: Running the tests
+      run: |
+        cd build
+        ctest -C Debug --output-on-failure
