@@ -33,6 +33,24 @@ execute_process(COMMAND ${CONAN} install ${CMAKE_CURRENT_LIST_DIR} -s arch=x86 -
 include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
 conan_basic_setup(TARGETS)
 
-add_executable(HelloWorld ${CMAKE_CURRENT_LIST_DIR}/src/main)
-set_source_files_properties(HelloWorld PROPERTIES CXX_STANDARD 17)
-target_link_libraries(HelloWorld PRIVATE CONAN_PKG::jsonformoderncpp)
+add_executable(Conan_Jsonformoderncpp ${CMAKE_CURRENT_LIST_DIR}/src/main)
+set_source_files_properties(Conan_Jsonformoderncpp PROPERTIES CXX_STANDARD 17)
+target_link_libraries(Conan_Jsonformoderncpp PRIVATE CONAN_PKG::jsonformoderncpp)
+
+
+include(ExternalProject)
+ExternalProject_Add(OfficialLastReleaseRepository
+  GIT_REPOSITORY    https://github.com/nlohmann/json.git
+  GIT_TAG           v3.7.3
+  BUILD_COMMAND     ""
+  INSTALL_COMMAND   ""
+  TEST_COMMAND      ""
+)
+
+add_executable(OfficialLastRelease_Jsonformoderncpp ${CMAKE_CURRENT_LIST_DIR}/src/main)
+set_source_files_properties(OfficialLastRelease_Jsonformoderncpp PROPERTIES CXX_STANDARD 17)
+
+add_dependencies(OfficialLastRelease_Jsonformoderncpp OfficialLastReleaseRepository)
+
+ExternalProject_Get_property(OfficialLastReleaseRepository SOURCE_DIR)
+target_include_directories(OfficialLastRelease_Jsonformoderncpp PRIVATE ${SOURCE_DIR}/include)
