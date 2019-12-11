@@ -86,8 +86,22 @@ endif(${CPPCHECK} MATCHES CPPCHECK-NOTFOUND)
 enable_testing()
 
 add_test(
-  NAME cppcheck
+  NAME cppcheck_OfficialLastRelease_Jsonformoderncpp
   COMMAND ${CPPCHECK} --error-exitcode=1
           --enable=warning,style,performance,portability --std=c++11
-          --project=${PROJECT_NAME}.sln
+          --project=OfficialLastRelease_Jsonformoderncpp.vcxproj
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+add_test(
+  NAME cppcheck_Conan_Jsonformoderncpp
+  COMMAND ${CPPCHECK} --error-exitcode=1
+          --enable=warning,style,performance,portability --std=c++11
+          --project=Conan_Jsonformoderncpp.vcxproj
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+add_test(
+NAME cppcheck_PersonalForkRepository
+COMMAND ${CPPCHECK} --error-exitcode=1
+        --enable=warning,style,performance,portability --std=c++11
+        --project=PersonalFork_Jsonformoderncpp.vcxproj
+WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
