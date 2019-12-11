@@ -3,23 +3,6 @@ cmake_minimum_required(VERSION 3.15.2)
 project(cppcheckOnModernJson)
 
 find_program(
-  CPPCHECK
-  NAMES cppcheck cppcheck.exe
-  HINTS "C:\\Program Files\\Cppcheck")
-
-if(${CPPCHECK} MATCHES CPPCHECK-NOTFOUND)
-  message(FATAL_ERROR "Cppcheck not found")
-endif(${CPPCHECK} MATCHES CPPCHECK-NOTFOUND)
-
-add_custom_target(
-  cppcheck ALL
-  COMMAND ${CPPCHECK} --error-exitcode=1
-          --enable=warning,style,performance,portability --std=c++11
-          --project=${PROJECT_NAME}.sln
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  COMMENT "Running cppcheck")
-
-find_program(
   CONAN
   NAMES conan.exe
   HINTS "C:\\Program Files\\Conan\\conan")
@@ -45,7 +28,7 @@ set_source_files_properties(Conan_Jsonformoderncpp PROPERTIES CXX_STANDARD 17)
 target_link_libraries(Conan_Jsonformoderncpp
                       PRIVATE CONAN_PKG::jsonformoderncpp)
 
-## ================================================================================
+# ==============================================================================
 
 include(ExternalProject)
 ExternalProject_Add(
@@ -68,7 +51,7 @@ ExternalProject_Get_Property(OfficialLastReleaseRepository SOURCE_DIR)
 target_include_directories(OfficialLastRelease_Jsonformoderncpp
                            PRIVATE ${SOURCE_DIR}/include)
 
-## ================================================================================
+# ==============================================================================
 
 include(ExternalProject)
 ExternalProject_Add(
@@ -79,8 +62,7 @@ ExternalProject_Add(
   INSTALL_COMMAND ""
   TEST_COMMAND "")
 
-add_executable(PersonalFork_Jsonformoderncpp
-               ${CMAKE_CURRENT_LIST_DIR}/src/main)
+add_executable(PersonalFork_Jsonformoderncpp ${CMAKE_CURRENT_LIST_DIR}/src/main)
 set_source_files_properties(PersonalFork_Jsonformoderncpp PROPERTIES
                             CXX_STANDARD 17)
 
@@ -89,3 +71,23 @@ add_dependencies(PersonalFork_Jsonformoderncpp PersonalForkRepository)
 ExternalProject_Get_Property(PersonalForkRepository SOURCE_DIR)
 target_include_directories(PersonalFork_Jsonformoderncpp
                            PRIVATE ${SOURCE_DIR}/include)
+
+# ==============================================================================
+
+find_program(
+  CPPCHECK
+  NAMES cppcheck cppcheck.exe
+  HINTS "C:\\Program Files\\Cppcheck")
+
+if(${CPPCHECK} MATCHES CPPCHECK-NOTFOUND)
+  message(FATAL_ERROR "Cppcheck not found")
+endif(${CPPCHECK} MATCHES CPPCHECK-NOTFOUND)
+
+enable_testing()
+
+add_test(
+  NAME cppcheck
+  COMMAND ${CPPCHECK} --error-exitcode=1
+          --enable=warning,style,performance,portability --std=c++11
+          --project=${PROJECT_NAME}.sln
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
